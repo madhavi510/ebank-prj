@@ -8,7 +8,7 @@ class LoginForm extends Component {
   state = {
     userIdInput: '',
     pinIdInput: '',
-    showSubmitError: false,
+    showSubmitError: '',
     errorMsg: '',
   }
 
@@ -21,24 +21,25 @@ class LoginForm extends Component {
   }
 
   onSubmitSuccess = jwtToken => {
-    const {history} = this.props
-
     Cookies.set('jwt_token', jwtToken, {expires: 30})
+    const {history} = this.props
     history.replace('/')
   }
 
   onSubmitFailure = errorMsg => {
     console.log(errorMsg)
-    this.setState({showSubmitError: true, errorMsg})
+    this.setState({
+      showSubmitError: true,
+      errorMsg,
+    })
   }
 
   submitForm = async event => {
     event.preventDefault()
     const {userIdInput, pinIdInput} = this.state
-    const userDetails = {userIdInput, pinIdInput}
+    const userDetails = {user_id: userIdInput, pin: pinIdInput}
     const url = 'https://apis.ccbp.in/ebank/login'
     const options = {
-      mode: 'cors',
       method: 'POST',
       body: JSON.stringify(userDetails),
     }
